@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인 | Cloud Commerce Lab</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="login-page">
+
+<main class="login-container">
+    <a class="login-logo" th:href="@{/}">
+        Cloud Commerce Lab
+    </a>
+
+    <section class="login-panel">
+        <h1>로그인</h1>
+        <p class="login-description">
+            로그인하고 주문 내역을 확인하세요.
+        </p>
+
+        <div class="login-error"
+             th:if="${errorMessage != null}"
+             th:text="${errorMessage}">
+            로그인에 실패했습니다.
+        </div>
+
+        <form th:action="@{/login}" method="post">
+            <div class="form-group">
+                <label for="email">이메일</label>
+                <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="example@email.com"
+                        autocomplete="username"
+                        required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="password">비밀번호</label>
+                <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="비밀번호를 입력하세요"
+                        autocomplete="current-password"
+                        required
+                >
+            </div>
+
+            <button type="submit" class="login-button">
+                로그인
+            </button>
+        </form>
+
+        <p class="login-notice">
+            개발용 로그인 화면입니다.
+        </p>
+    </section>
+
+    <a class="back-to-shop" th:href="@{/items}">
+        상품 목록으로 돌아가기
+    </a>
+</main>
+
+</body>
+</html>
