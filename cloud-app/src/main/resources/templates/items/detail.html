@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>상품 상세 | Cloud Commerce Lab</title>
+    <title>상품 상세 | Cloud Application Guide</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/items/detail.css}">
 </head>
 <body>
 
@@ -26,51 +27,58 @@
             </p>
 
             <p class="price">
-                <span th:text="${#numbers.formatInteger(item.price, 0, 'COMMA')}">
-                    59,000
-                </span>원
+            <span th:text="${#numbers.formatInteger(item.price, 0, 'COMMA')}">
+                59,000
+            </span>원
             </p>
 
             <div class="info-row">
                 <span class="muted">상품 번호</span>
-                <span th:text="${item.id}">1</span>
+                <span id="itemId" th:text="${item.itemId}">1</span>
             </div>
 
             <div class="info-row">
                 <span class="muted">재고</span>
-                <span th:text="${item.stock} + '개'">25개</span>
+                <span id="itemStock" th:text="${item.quantity}">25</span>개
             </div>
+
+            <div class="info-row">
+                <label for="quantity" class="muted">주문 수량</label>
+                <input
+                        type="number"
+                        id="quantity"
+                        name="quantity"
+                        value="1"
+                        min="1"
+                        th:attr="max=${item.quantity}"
+                        required
+                >
+            </div>
+
+            <div class="info-row">
+                <span class="muted">총 주문 금액</span>
+                <strong id="totalPrice"
+                        th:attr="data-price=${item.price}"
+                        th:text="|${#numbers.formatInteger(item.price, 0, 'COMMA')}원|">
+                    59,000원
+                </strong>
+            </div>
+
+            <p id="errorMessage" class="error-message" hidden></p>
 
             <div class="button-group">
                 <button type="button" class="button" id="orderButton">
                     주문하기
                 </button>
 
-                <a class="button button-secondary"
-                   th:href="@{/items}">
+                <a class="button button-secondary" th:href="@{/items}">
                     목록으로
                 </a>
             </div>
-
-            <!--
-            TODO: REST API 연동
-            1. POST /api/v1/orders 호출
-            2. 주문 성공 시 반환된 orderId 확인
-            3. /orders/{orderId}로 이동
-            -->
-
-            <!--
-            <script>
-                document.getElementById('orderButton').addEventListener('click', async () => {
-                    // TODO: 로그인한 회원 ID와 상품 ID를 이용해 주문 API 호출
-                    // const response = await fetch('/api/v1/orders', { ... });
-                    // const order = await response.json();
-                    // location.href = `/orders/${order.id}`;
-                });
-            </script>
-            -->
         </div>
     </section>
+
+    <script th:src="@{/js/items/order.js}" defer></script>
 </main>
 
 <div th:replace="~{fragments/layout :: footer}"></div>
