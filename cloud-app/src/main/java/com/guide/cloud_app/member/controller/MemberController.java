@@ -1,7 +1,10 @@
 package com.guide.cloud_app.member.controller;
 
+import com.guide.cloud_app.member.entity.Member;
+import com.guide.cloud_app.member.service.MemberService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -10,14 +13,25 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
+@RequiredArgsConstructor
 public class MemberController {
+
+    private final MemberService memberService;
 
     @GetMapping("/")
     public String home(@CookieValue(name = "memberId", required = false) String memberId) {
-        if (memberId != null) {
-            return "redirect:/items";
+        if (memberId == null) {
+            return "redirect:/login";
         }
-        return "redirect:/login";
+
+        try {
+            memberService.validateMember(Long.valueOf(memberId));
+        } catch (IllegalArgumentException e) {
+            return "redirect:/login";
+        }
+
+        return "redirect:/items";
+
     }
 
     @GetMapping("/login")
@@ -29,16 +43,16 @@ public class MemberController {
     public String processLogin(
             @RequestParam String email,
             @RequestParam String password,
-            HttpServletResponse response,
-            Model model
+            HttpServletResponse response
     ) {
-        // TODO: 로그인 REST API 호출
-        // TODO: 서버에서 인증 결과를 검증하고 실제 memberId 획득
+        Member member;
+        try {
+            member = memberService.login(email, password);
+        } catch (IllegalArgumentException e) {
+            return "redirect:/login";
+        }
 
-        // 임시 처리
-        long memberId = 1L;
-
-        Cookie cookie = new Cookie("memberId", String.valueOf(memberId));
+        Cookie cookie = new Cookie("memberId", String.valueOf(member.getId()));
         cookie.setPath("/");
         cookie.setHttpOnly(true);
         cookie.setMaxAge(60 * 60 * 24);
