@@ -1,54 +1,46 @@
 package com.guide.cloud_app.item.controller;
 
 import com.guide.cloud_app.common.api.ApiResponse;
-import com.guide.cloud_app.item.domain.ItemStatus;
 import com.guide.cloud_app.item.domain.dto.*;
-import com.guide.cloud_app.item.exception.ItemSuccessResponse;
+import com.guide.cloud_app.item.api.ItemSuccessResponse;
+import com.guide.cloud_app.item.service.ItemService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/items")
 public class ItemApiController implements ItemApiControllerDocs {
+
+    private final ItemService itemService;
 
     @Override
     @PostMapping
     public ResponseEntity<ApiResponse<ItemResponse>> registerItem(
             @RequestBody ItemRequest request) {
-        return ApiResponse.onSuccess(ItemSuccessResponse.ITEM_REGISTERED, null);
+        return ApiResponse.onSuccess(ItemSuccessResponse.ITEM_REGISTERED,
+                itemService.registerItem(request));
     }
 
     @Override
     @GetMapping
     public ResponseEntity<ApiResponse<ItemListResponse>> getItemList() {
-        return ApiResponse.onSuccess(ItemSuccessResponse.ITEM_LIST_FOUND, ItemListResponse.of(
-                List.of(
-                        ItemResponse.of(1L, "Wireless Keyboard", "무선 키보드", 59000, ItemStatus.ON_SALE),
-                        ItemResponse.of(2L, "Wireless Mouse", "무선 마우스", 35000, ItemStatus.ON_SALE),
-                        ItemResponse.of(3L, "USB-C Hub", "USB-C 멀티 허브", 42000, ItemStatus.SOLD_OUT),
-                        ItemResponse.of(4L, "USB-C Hub", "USB-C 멀티 허브", 42000, ItemStatus.SOLD_OUT)
-                )
-        ));
+        return ApiResponse.onSuccess(ItemSuccessResponse.ITEM_LIST_FOUND, itemService.getItemList());
     }
 
     @Override
     @GetMapping("/{itemId}")
-    public ResponseEntity<ApiResponse<ItemResponse>> getItem(@PathVariable Long itemId) {
-        return ApiResponse.onSuccess(ItemSuccessResponse.ITEM_FOUND, null);
+    public ResponseEntity<ApiResponse<ItemStockResponse>> getItem(@PathVariable Long itemId) {
+        return ApiResponse.onSuccess(ItemSuccessResponse.ITEM_FOUND, itemService.getItem(itemId));
     }
 
     @Override
-    @GetMapping("/{itemId}/stock")
-    public ResponseEntity<ApiResponse<ItemStockResponse>> getItemStock(@PathVariable Long itemId) {
-        return ApiResponse.onSuccess(ItemSuccessResponse.ITEM_STOCK_FOUND, null);
-    }
-
-    @Override
-    @PostMapping("/{itemId}/stocks/{quantity}")
-    public ResponseEntity<ApiResponse<ItemStockResponse>> updateItemStock(
-            @RequestBody ItemStockRequest request) {
-        return ApiResponse.onSuccess(ItemSuccessResponse.ITEM_STOCK_UPDATED, null);
+    @PostMapping("/{itemId}")
+    public ResponseEntity<ApiResponse<ItemStockResponse>> addItemStock(
+            @PathVariable Long itemId,
+            @RequestParam Long quantity) {
+        return ApiResponse.onSuccess(ItemSuccessResponse.ITEM_STOCK_UPDATED,
+                itemService.addItemStock(itemId, quantity));
     }
 }
