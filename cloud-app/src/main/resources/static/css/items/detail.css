@@ -1,0 +1,18 @@
+#quantity {
+    width: 100px;
+    padding: 8px 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+.error-message {
+    margin-top: 12px;
+    color: #dc2626;
+    font-size: 14px;
+}
+
+#orderButton:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}

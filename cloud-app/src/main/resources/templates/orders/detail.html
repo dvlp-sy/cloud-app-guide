@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>주문 상세 | Cloud Application Guide</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div th:replace="~{fragments/layout :: header}"></div>
+
+<main class="container">
+    <h1 class="page-title">주문 상세</h1>
+    <p class="page-description">주문 내역을 확인할 수 있습니다.</p>
+
+    <section class="panel" th:attr="data-order-id=${order.orderId}">
+        <div class="info-row">
+            <span class="muted">주문 번호</span>
+            <strong id="orderId" th:text="${order.orderId}">1001</strong>
+        </div>
+
+        <div class="info-row">
+            <span class="muted">주문 상태</span>
+            <span class="status" th:text="${order.orderStatus}">COMPLETED</span>
+        </div>
+
+        <hr>
+
+        <h2>주문 상품</h2>
+
+        <div th:if="${#lists.isEmpty(order.items)}" class="muted">
+            주문 상품이 없습니다.
+        </div>
+
+        <div th:each="item : ${order.items}" class="order-item">
+            <div class="info-row">
+                <span class="muted">상품명</span>
+                <span th:text="${item.name}">Wireless Keyboard</span>
+            </div>
+
+            <div class="info-row">
+                <span class="muted">수량</span>
+                <span th:text="|${item.quantity}개|">1개</span>
+            </div>
+
+            <div class="info-row">
+                <span class="muted">상품 금액</span>
+                <strong>
+                <span th:text="${#numbers.formatInteger(item.amount, 0, 'COMMA')}">
+                    59,000
+                </span>원
+                </strong>
+            </div>
+
+            <hr>
+        </div>
+
+        <div class="info-row">
+            <span class="muted">총 주문 금액</span>
+            <strong>
+            <span th:text="${#numbers.formatInteger(order.totalAmount, 0, 'COMMA')}">
+                59,000
+            </span>원
+            </strong>
+        </div>
+
+        <p id="errorMessage" class="error-message" hidden></p>
+
+        <div class="button-group">
+            <a class="button button-secondary" th:href="@{/orders}">
+                주문 목록
+            </a>
+
+            <a class="button button-secondary" th:href="@{/items}">
+                쇼핑 계속하기
+            </a>
+
+            <button type="button"
+                    class="button button-danger"
+                    id="cancelOrderButton"
+                    th:disabled="${order.orderStatus.name() == 'CANCELLED'}"
+                    th:text="${order.orderStatus.name() == 'CANCELLED' ? '취소 완료' : '주문 취소'}">
+                주문 취소
+            </button>
+        </div>
+    </section>
+
+    <script th:src="@{/js/orders/cancel.js}" defer></script>
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>주문 목록 | Cloud Application Guide</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div th:replace="~{fragments/layout :: header}"></div>
+
+<main class="container">
+    <h1 class="page-title">주문 내역</h1>
+
+    <p class="page-description">
+        회원 번호:
+        <strong th:text="${memberId}">1</strong>
+    </p>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+            <tr>
+                <th>주문 번호</th>
+                <th>주문 상품</th>
+                <th>주문 금액</th>
+                <th>주문 상태</th>
+                <th>상세 보기</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr th:each="order : ${orders}">
+                <td th:text="${order.orderId}">1001</td>
+
+                <td>
+                    <ul class="order-item-list">
+                        <li th:each="item : ${order.items}">
+                            <span th:text="${item.name}">Wireless Keyboard</span>
+
+                            <span th:if="${item.quantity != null}"
+                                  th:text="| (${item.quantity}개)|">
+                                (2개)
+                            </span>
+                        </li>
+                    </ul>
+                </td>
+
+                <td>
+                    <span th:text="${#numbers.formatInteger(order.totalAmount, 0, 'COMMA')}">
+                        0
+                    </span>원
+                </td>
+
+                <td>
+                    <span class="status" th:text="${order.orderStatus}">
+                        ORDERED
+                    </span>
+                </td>
+
+                <td>
+                    <a class="button"
+                       th:href="@{/orders/{orderId}(orderId=${order.orderId})}">
+                        상세 보기
+                    </a>
+                </td>
+            </tr>
+
+            <tr th:if="${#lists.isEmpty(orders)}">
+                <td colspan="5" class="empty-message">
+                    주문 내역이 없습니다.
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+
+</body>
+</html>
