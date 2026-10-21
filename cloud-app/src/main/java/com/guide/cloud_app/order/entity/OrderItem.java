@@ -3,9 +3,11 @@ package com.guide.cloud_app.order.entity;
 import com.guide.cloud_app.item.entity.Item;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Getter
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Builder(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

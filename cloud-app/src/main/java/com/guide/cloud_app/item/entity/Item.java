@@ -5,11 +5,13 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Builder(access = lombok.AccessLevel.PRIVATE)
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -48,5 +50,9 @@ public class Item {
                 .price(price)
                 .status(status)
                 .build();
+    }
+
+    public void soldOut() {
+        status = ItemStatus.SOLD_OUT;
     }
 }

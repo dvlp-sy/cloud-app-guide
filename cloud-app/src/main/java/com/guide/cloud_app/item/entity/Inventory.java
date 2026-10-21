@@ -7,11 +7,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Builder(access = lombok.AccessLevel.PRIVATE)
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 @AllArgsConstructor(access = lombok.AccessLevel.PRIVATE)
@@ -23,7 +25,7 @@ public class Inventory {
     private Long id;
 
     @Column(nullable = false)
-    private Integer quantity;
+    private Long quantity;
 
     @Column(nullable = false)
     private String version;
@@ -40,11 +42,19 @@ public class Inventory {
     @Column
     private LocalDateTime updatedAt;
 
-    public static Inventory of(Integer quantity, String version, Item item) {
+    public static Inventory of(Long quantity, String version, Item item) {
         return Inventory.builder()
                 .quantity(quantity)
                 .version(version)
                 .item(item)
                 .build();
+    }
+
+    public void reduceQuantity(Long quantity) {
+        this.quantity -= quantity;
+    }
+
+    public void addQuantity(Long quantity) {
+        this.quantity += quantity;
     }
 }
