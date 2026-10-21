@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>상품 목록 | Cloud Commerce Lab</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div th:replace="~{fragments/layout :: header}"></div>
+
+<main class="container">
+    <h1 class="page-title">상품 목록</h1>
+    <p class="page-description">다양한 상품을 확인해 보세요.</p>
+
+    <div id="item-list" class="card-grid">
+        <p id="loading-message" class="muted">상품 목록을 불러오는 중입니다.</p>
+    </div>
+
+    <p id="error-message" class="error-message" hidden>
+        상품 목록을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.
+    </p>
+
+    <div id="pagination" class="pagination"></div>
+</main>
+
+<script th:src="@{/js/items/list.js}" defer></script>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+
+</body>
+</html>
