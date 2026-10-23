@@ -1,0 +1,41 @@
+name: Semantic Version Release
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+concurrency:
+  group: semantic-release-main
+  cancel-in-progress: false
+
+jobs:
+  tag:
+    name: 버전 태그 생성
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 저장소 체크아웃
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: 버전 계산
+        id: version
+        run: |
+          next_version="$(./scripts/next-version.sh)"
+          echo "next_version=${next_version}" >> "$GITHUB_OUTPUT"
+          echo "계산된 버전: ${next_version}"
+
+      - name: 태그 생성 및 푸시
+        env:
+          NEXT_VERSION: ${{ steps.version.outputs.next_version }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "$NEXT_VERSION" -m "Release $NEXT_VERSION" "$GITHUB_SHA"
+          git push origin "$NEXT_VERSION"
