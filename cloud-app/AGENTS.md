@@ -28,7 +28,7 @@ src/main/resources/
   templates/               Thymeleaf 화면과 공통 fragment
   static/                  CSS와 브라우저 JavaScript
 src/test/java/             테스트 코드
-harness/                   프로젝트 목표·구조·품질·워크플로 문서
+harness/                   프로젝트 목표·구조·품질·브랜치·워크플로 문서
 scripts/                   로컬 및 CI 검증 스크립트
 ```
 
@@ -87,6 +87,17 @@ scripts/                   로컬 및 CI 검증 스크립트
 3. API 계약, 트랜잭션, 재고 상태, 화면 레이아웃이 유지되는지 확인한다.
 4. `git diff --check`와 변경 파일 목록을 확인한다.
 5. 무관한 포맷 변경, 비밀 정보, 생성물과 빌드 디렉터리가 포함되지 않았는지 검토한다.
+
+## 브랜치 및 릴리스 규칙
+
+- `main`: 검증이 완료된 메인 브랜치이며 배포 기준점이다.
+- `develop`: 여러 변경사항을 통합하고 통합 검증을 수행하는 브랜치다.
+- `feat/OOO`: 새로운 기능을 개발하는 브랜치다. `OOO`에는 짧고 구체적인 기능명을 사용한다.
+- `bugfix/OOO`: 기존 동작의 버그를 수정하는 브랜치다. `OOO`에는 수정 대상을 드러내는 이름을 사용한다.
+- 기능·버그 수정 브랜치는 `develop`에서 생성하고, 리뷰와 품질 게이트 통과 후 `develop`에 통합한다. 검증된 변경만 `main`에 반영한다.
+- `main` 배포는 Semantic Versioning(`MAJOR.MINOR.PATCH`)에 맞는 `vMAJOR.MINOR.PATCH` 태그를 기준으로 한다. 머지는 자동으로 수행하지 않으며, 리뷰어가 확인한 뒤 명시적으로 진행한다.
+- `main`에 반영되면 `release.yaml`이 마지막 릴리스 이후 커밋을 기준으로 버전을 자동 계산하고 태그를 생성한다. `BREAKING CHANGE` 또는 `type!:`은 MAJOR, `feat:`은 MINOR, 그 외 변경은 PATCH를 증가시킨다. 따라서 기능·버그 수정 커밋은 Conventional Commits 형식을 사용한다.
+- 브랜치 생성·병합·릴리스 절차의 세부 규칙은 `harness/branching.md`와 `harness/workflows/` 문서를 따른다.
 
 ## 코드 스타일
 

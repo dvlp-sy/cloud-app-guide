@@ -38,6 +38,9 @@ out/
 
 ### yaml ###
 *.yaml
+!.github/
+!.github/workflows/
+!.github/workflows/*.yaml
 
 ### sdkman ###
 .sdkmanrc
